@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escape Room</title>
+
+  <style>
+    :root{
+      --bg:#050a14;
+      --bg2:#0b1b33;
+      --panel:rgba(255,255,255,0.06);
+      --panel-dark:rgba(0,0,0,0.28);
+      --border:rgba(255,255,255,0.12);
+      --text:#eaf2ff;
+      --muted:#9fb0cc;
+      --accent:#7dffb2;
+      --warn:#ffd166;
+      --danger:#ff7b91;
+      --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --radius:22px;
+      --shadow:0 18px 50px rgba(0,0,0,0.35);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+    }
+
+    body{
+      min-height:100vh;
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1000px 600px at 15% 0%, #11284b 0%, transparent 60%),
+        radial-gradient(900px 500px at 100% 100%, #07111f 0%, transparent 55%),
+        linear-gradient(180deg,#050a14,#02050a);
+      padding:28px;
+    }
+
+    .shell{
+      width:100%;
+      min-height:calc(100vh - 56px);
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 320px;
+      gap:24px;
+      align-items:start;
+    }
+
+    @media (max-width: 960px){
+      .shell{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .main{
+      min-height:calc(100vh - 56px);
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .logo{
+      width:54px;
+      height:54px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      font-size:24px;
+      color:white;
+      border:1px solid var(--border);
+      background:linear-gradient(135deg, rgba(125,255,178,0.28), rgba(104,168,255,0.35));
+      box-shadow:var(--shadow);
+      flex-shrink:0;
+    }
+
+    .brand-text h1{
+      margin:0;
+      font-size:30px;
+      line-height:1.05;
+      letter-spacing:0.2px;
+    }
+
+    .brand-text p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .status{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      min-width:140px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.05);
+      box-shadow:var(--shadow);
+      font-family:var(--mono);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      font-size:13px;
+    }
+
+    .pill span{
+      color:var(--muted);
+    }
+
+    .center-wrap{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .panel{
+      width:min(860px, 100%);
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:28px;
+      padding:34px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
+    }
+
+    .stage-title{
+      margin:0 0 10px;
+      text-align:center;
+      font-size:34px;
+      line-height:1.1;
+    }
+
+    .stage-sub{
+      text-align:center;
+      color:var(--muted);
+      font-size:15px;
+      margin-bottom:24px;
+    }
+
+    .scenario{
+      background:var(--panel-dark);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      margin-bottom:22px;
+      text-align:center;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:16px;
+      min-height:110px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .inputBox{
+      max-width:720px;
+      margin:0 auto 14px;
+      width:100%;
+    }
+
+    input{
+      width:100%;
+      padding:16px 18px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,0.38);
+      color:var(--text);
+      font-family:var(--mono);
+      font-size:16px;
+      outline:none;
+    }
+
+    input::placeholder{
+      color:#8da0be;
+    }
+
+    .actions{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    button{
+      padding:13px 22px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,0.4);
+      color:var(--text);
+      cursor:pointer;
+      font-family:var(--mono);
+      font-size:14px;
+      transition:0.18s ease;
+    }
+
+    button:hover{
+      transform:translateY(-1px);
+    }
+
+    button.good{
+      border-color:var(--accent);
+      color:var(--accent);
+      background:rgba(125,255,178,0.06);
+    }
+
+    button.warn{
+      border-color:var(--warn);
+      color:var(--warn);
+      background:rgba(255,209,102,0.06);
+    }
+
+    button.danger{
+      border-color:var(--danger);
+      color:var(--danger);
+      background:rgba(255,123,145,0.06);
+    }
+
+    .toast{
+      margin:18px auto 0;
+      max-width:720px;
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,0.32);
+      color:var(--muted);
+      min-height:50px;
+      display:none;
+      text-align:center;
+      line-height:1.55;
+    }
+
+    .toast.show{
+      display:block;
+    }
+
+    .side{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
+      min-height:260px;
+      align-self:start;
+      position:sticky;
+      top:28px;
+    }
+
+    .side h2{
+      margin:0 0 16px;
+      font-size:22px;
+    }
+
+    .rules ul{
+      margin:0;
+      padding-left:18px;
+    }
+
+    .rules li{
+      margin-bottom:12px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:15px;
+    }
+
+    .hint-box{
+      margin-top:20px;
+      padding-top:18px;
+      border-top:1px solid var(--border);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .mail-shell{
+      max-width:760px;
+      margin:0 auto;
+    }
+
+    .mail-window{
+      background:#f3f3f3;
+      color:#111;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.15);
+      box-shadow:0 18px 50px rgba(0,0,0,0.35);
+    }
+
+    .mail-topbar{
+      background:#111822;
+      color:#fff;
+      padding:12px 16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:13px;
+      font-family:var(--mono);
+    }
+
+    .mail-body{
+      padding:28px 34px 38px;
+      line-height:1.6;
+      font-size:16px;
+      min-height:460px;
+      position:relative;
+    }
+
+    .mail-meta{
+      margin-bottom:22px;
+      line-height:1.8;
+    }
+
+    .mail-counter{
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+      margin-top:12px;
+    }
+
+    .attachment-box{
+      margin-top:18px;
+      padding:14px 16px;
+      border:1px dashed rgba(0,0,0,0.2);
+      border-radius:14px;
+      background:rgba(0,0,0,0.03);
+    }
+
+    .fake-link{
+      color:#5a2ea6;
+      text-decoration:underline;
+      word-break:break-word;
+    }
+
+    .dark-card{
+      max-width:760px;
+      margin:0 auto;
+      background:rgba(0,0,0,0.26);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:15px;
+      text-align:center;
+    }
+
+    .final-delete-box{
+      max-width:760px;
+      margin:0 auto;
+      background:rgba(0,0,0,0.26);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+    }
+
+    .record-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      padding:14px 0;
+      border-bottom:1px solid var(--border);
+    }
+
+    .record-row:last-child{
+      border-bottom:none;
+    }
+
+    .record-title{
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .record-sub{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .cipher-box{
+      margin-top:18px;
+      padding:16px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      border-radius:14px;
+      font-family:var(--mono);
+      text-align:center;
+      font-size:16px;
+      color:var(--text);
+    }
+
+    .route-box{
+      max-width:760px;
+      margin:0 auto;
+      background:rgba(0,0,0,0.26);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.7;
+      text-align:center;
+    }
+
+    .route-box code{
+      color:var(--text);
+      background:rgba(255,255,255,0.05);
+      padding:4px 8px;
+      border-radius:10px;
+      word-break:break-all;
+    }
+
+    .success-box{
+      max-width:760px;
+      margin:0 auto;
+      background:rgba(125,255,178,0.08);
+      border:1px solid rgba(125,255,178,0.25);
+      border-radius:18px;
+      padding:20px;
+      color:#dffff0;
+      line-height:1.7;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="shell">
+
+    <div class="main">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">W</div>
+          <div class="brand-text">
+            <h1>Escape Room</h1>
+            <p>WiCyS</p>
+          </div>
+        </div>
+
+        <div class="status">
+          <div class="pill"><span>User</span><b id="statUser">—</b></div>
+          <div class="pill"><span>Time</span><b id="statTime">00:00</b></div>
+          <div class="pill"><span>Progress</span><b id="statProgress">0/5</b></div>
+        </div>
+      </div>
+
+      <div class="center-wrap">
+        <div class="panel">
+          <h2 class="stage-title" id="title">System Login</h2>
+          <div class="stage-sub" id="subtitle">Begin the simulation</div>
+
+          <div class="scenario" id="scenarioBox">
+            Begin the simulation by entering your name.
+          </div>
+
+          <div class="inputBox" id="inputBox"></div>
+          <div class="actions" id="actions"></div>
+          <div class="toast" id="toastBox"></div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side rules">
+      <h2>Rules</h2>
+      <ul>
+        <li>No gecdnAI tools permitted</li>
+        <li>Google is allowed</li>
+        <li>Use physical clues in the room</li>
+        <li>Hints add time penalties</li>
+        <li>Work through the simulation in order</li>
+      </ul>
+    </aside>
+
+
+  </div>
+
+  <script>
+    const ANSWERS = {
+    1: {
+      username: "j.smith",
+      password: "knightpawnrook"
+    },
+      4: "thispasswordisverysecure!!!",
+      5: "yes i want to delete this"
+    };
+
+    const SCENARIO = {
+      0: "Begin the simulation by entering your name.",
+      1: "Physical artefacts reveal a weak credential.",
+      2: "The system rejects insecure credentials.",
+      3: "Internal messages have been updated.",
+      4: "A separate credential is still required.",
+      5: "Final action requires confirmation.",
+      6: "Simulation complete."
+    };
+
+    const SUBTITLE = {
+      0: "Escape Room",
+      1: "Recover the weak entry credential",
+      2: "Strengthen access controls",
+      3: "Dashboard",
+      4: "Admin verification",
+      5: "Final confirmation",
+      6: "All stages complete"
+    };
+
+    const HINTS = {
+      1: "Chess-related clues are relevant.",
+      2: "Make it long and include uppercase, lowercase, a number, and a symbol.",
+      3: "Some pages are not listed in the dashboard navigation.",
+      4: "The password is not written directly. Review the message thread carefully.",
+      5: "Think of a Roman emperor. Shift 7."
+    };
+
+    let state = {
+      user: "",
+      level: 0,
+      start: null,
+      penalty: 0,
+      level3Step: 0,
+      level4Step: 0,
+      level3Mail: 0
+    };
+
+    function byId(id){
+      return document.getElementById(id);
+    }
+
+    function elapsedSeconds(){
+      if(!state.start) return 0;
+      return Math.floor((Date.now() - state.start) / 1000) + state.penalty;
+    }
+
+    function time(){
+      const s = elapsedSeconds();
+      return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+    }
+
+    function updateStats(){
+      byId("statUser").innerText = state.user || "—";
+      byId("statTime").innerText = time();
+      byId("statProgress").innerText = `${Math.max(0, state.level)}/5`;
+    }
+
+    function toast(msg){
+      const box = byId("toastBox");
+      box.innerText = msg;
+      box.className = "toast show";
+    }
+
+    function clearToast(){
+      const box = byId("toastBox");
+      box.innerText = "";
+      box.className = "toast";
+    }
+
+    function addHintPenalty(){
+      state.penalty += 30;
+      updateStats();
+    }
+
+    function makeButton(text, fn, cls = ""){
+      const b = document.createElement("button");
+      b.innerText = text;
+      b.onclick = fn;
+      if(cls) b.className = cls;
+      return b;
+    }
+
+    function renderInput(placeholder, submitFn){
+      const inputBox = byId("inputBox");
+      const actions = byId("actions");
+
+      inputBox.innerHTML = `<input id="inp" placeholder="${placeholder}">`;
+      actions.innerHTML = "";
+
+      actions.appendChild(makeButton("Submit", submitFn, "good"));
+      actions.appendChild(makeButton("Hint +30s", () => {
+        addHintPenalty();
+        toast(HINTS[state.level]);
+      }, "warn"));
+      actions.appendChild(makeButton("Reset", resetGame, "danger"));
+
+      const inp = byId("inp");
+      inp.focus();
+      inp.addEventListener("keydown", e => {
+        if(e.key === "Enter") submitFn();
+      });
+    }
+
+    function startGame(){
+      const v = byId("inp").value.trim();
+      if(!v){
+        toast("Please enter your name.");
+        return;
+      }
+      state.user = v;
+      state.start = Date.now();
+      state.level = 1;
+      render();
+    }
+
+    function submitLevel1(){
+      const user = byId("username").value.trim().toLowerCase();
+      const pass = byId("password").value.trim().toLowerCase().replace(/\s+/g, "");
+      
+      if(user !== ANSWERS[1].username || pass !== ANSWERS[1].password){
+        toast("Invalid credentials.");
+        return;
+      }
+      
+      state.level = 2;
+      render();
+    }
+
+    function submitLevel2(){
+      const v = byId("inp").value.trim();
+      const strong =
+        v.length >= 14 &&
+        /[A-Z]/.test(v) &&
+        /[a-z]/.test(v) &&
+        /[0-9]/.test(v) &&
+        /[^A-Za-z0-9]/.test(v);
+
+      if(!strong){
+        toast("That password does not meet the policy.");
+        return;
+      }
+
+      state.level = 3;
+      state.level3Step = 0;
+      state.level3Mail = 0;
+      render();
+    }
+
+    const level3Mails = [
+      `
+      <div class="mail-meta">
+        <div><b>From:</b> HR</div>
+        <div><b>To:</b> John Smith</div>
+        <div><b>Subject:</b> Onboarding Reminder</div>
+      </div>
+
+      <p>Hi,</p>
+      <p>Just a quick reminder to complete your onboarding forms and security awareness training by the end of the week.</p>
+      <p>Welcome again to the team!</p>
+      <p>– HR</p>
+      `,
+      `
+      <div class="mail-meta">
+        <div><b>From:</b> IT Support</div>
+        <div><b>Subject:</b> Security Reminder</div>
+      </div>
+
+      <p>Please remember not to share your passwords with anyone, including colleagues or IT staff.</p>
+      <p>If you suspect your account has been compromised, report it immediately.</p>
+      <p>– IT Support</p>
+      `,
+      `
+      <div class="mail-meta">
+         <div><b>From:</b> IT Support &lt;itsupport@securecorp.com&gt;</div>
+          <div><b>To:</b> John Smith &lt;j.smith@securecorp.com&gt;</div>
+           <div><b>Subject:</b> Welcome to SecureCorp – Dashboard Access</div>
+           </div>
+           
+           <p>Hi,</p>
+           
+           <p>Welcome to the team! As part of your onboarding, you’ll need to access the internal dashboard to familiarise yourself with the system.</p>
+           
+           <p>You can log in here:</p>
+           
+           <div style="margin:14px 0 18px;">
+            <button type="button" onclick="window.open('https://surreyac-my.sharepoint.com/:f:/g/personal/ck00845_surrey_ac_uk/IgDvVitKHikQRb3jnpwdve4QAbFYRKR1OD7vwKVeWZ_N_mE?e=YZ8tp2%27%2c%27_blank&xsdata=MDV8MDJ8ZW8wMDk4M0BzdXJyZXkuYWMudWt8MDZlMWUyZTdmN2M0NDIzMDgyNWUwOGRlODgwNzVmOGF8NmI5MDI2OTMxMDc0NDBhYTllMjFkODk0NDZhMmViYjV8MHwwfDYzOTA5Nzc2MjIxNjA2OTIxMXxVbmtub3dufFRXRnBiR1pzYjNkOGV5SkZiWEIwZVUxaGNHa2lPblJ5ZFdVc0lsWWlPaUl3TGpBdU1EQXdNQ0lzSWxBaU9pSlhhVzR6TWlJc0lrRk9Jam9pVFdGcGJDSXNJbGRVSWpveWZRPT18MHx8fA%3d%3d&sdata=cEVyeDVuS3ExQjkzWXg3Z1hYQUdjUEkyK1hLQ01mSU4vOWNDakdWSGx1Yz0%3d')" style="padding:12px 18px; border-radius:12px; border:1px solid #ccc; background:#111822; color:#fff; cursor:pointer;">
+              Open onboarding materials
+              </button>
+              </div>
+              
+              <p>For first-time access, the system is still using the default company password. You should be able to find the information you need around the office.</p>
+              <p>Once you’re in, please make sure to update your password into something more secure.</p>
+              <p>Let us know if you run into any issues.</p>
+              
+              <p>– IT Support</p>
+              `,
+              `
+      <div class="mail-meta">
+        <div><b>From:</b> Admin Team</div>
+        <div><b>To:</b> John Smith</div>
+        <div><b>Subject:</b> Admin Panel Access</div>
+      </div>
+
+      <p>Hi,</p>
+      <p>Just a reminder that the admin panel isn’t listed on the dashboard menu for security reasons. Admins can still access it directly if needed.</p>
+      <p>If you already have the dashboard open, the quickest way is to go straight to the admin page from the address bar.</p>
+      <p>– Admin Team</p>
+      `,
+      `
+      <div class="mail-meta">
+        <div><b>From:</b> IT Support</div>
+        <div><b>Subject:</b> Scheduled Maintenance</div>
+      </div>
+
+      <p>Hi all,</p>
+      <p>We’ll be doing routine server maintenance this Friday evening. Some internal tools may be briefly unavailable.</p>
+      <p>Thanks for your patience.</p>
+      <p>– IT Support</p>
+      `
+    ];
+
+    function isAdminRoute(){
+      const fullUrl = window.location.href.toLowerCase();
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+
+      return (
+        fullUrl.includes("#admin") ||
+        hash.includes("admin") ||
+        path.endsWith("/admin") ||
+        path.includes("/admin/")
+      );
+    }
+
+    function renderLevel3(){
+      const inputBox = byId("inputBox");
+      const actions = byId("actions");
+      actions.innerHTML = "";
+
+      if(state.level3Step === 0){
+        inputBox.innerHTML = `
+          <div class="dark-card">
+            Internal messages have been updated.
+          </div>
+        `;
+
+        actions.appendChild(makeButton("Open Dashboard", () => {
+          state.level3Step = 1;
+          render();
+        }, "good"));
+
+        actions.appendChild(makeButton("Hint +30s", () => {
+          addHintPenalty();
+          toast(HINTS[3]);
+        }, "warn"));
+
+        actions.appendChild(makeButton("Reset", resetGame, "danger"));
+        return;
+      }
+
+      if(state.level3Step === 1){
+        inputBox.innerHTML = `
+          <div class="mail-shell">
+            <div class="mail-window">
+              <div class="mail-topbar">
+                <span>Women in Cybersecurity
+                <span>Messages</span>
+              </div>
+              <div class="mail-body">
+                ${level3Mails[state.level3Mail]}
+              </div>
+            </div>
+            <div class="mail-counter">Message ${state.level3Mail + 1} / ${level3Mails.length}</div>
+          </div>
+        `;
+
+        actions.appendChild(makeButton("Previous", () => {
+          if(state.level3Mail > 0){
+            state.level3Mail--;
+            render();
+          }
+        }));
+
+        actions.appendChild(makeButton("Next", () => {
+          if(state.level3Mail < level3Mails.length - 1){
+            state.level3Mail++;
+            render();
+          }
+        }));
+
+        actions.appendChild(makeButton("Proceed", () => {
+          state.level3Step = 2;
+          render();
+        }, "good"));
+
+        actions.appendChild(makeButton("Hint +30s", () => {
+          addHintPenalty();
+          toast(HINTS[3]);
+        }, "warn"));
+
+        actions.appendChild(makeButton("Reset", resetGame, "danger"));
+        return;
+      }
+
+      if(state.level3Step === 2){
+        const currentUrl = window.location.href.split("#")[0];
+
+        inputBox.innerHTML = `
+          <div class="route-box">
+            <br><br>
+          </div>
+        `;
+
+        actions.appendChild(makeButton("Check Access", () => {
+          if(isAdminRoute()){
+            state.level = 4;
+            state.level4Step = 0;
+            render();
+          } else {
+            toast("Admin route not detected.");
+          }
+        }, "good"));
+
+        actions.appendChild(makeButton("Hint +30s", () => {
+          addHintPenalty();
+          toast(HINTS[3]);
+        }, "warn"));
+
+        actions.appendChild(makeButton("Reset", resetGame, "danger"));
+      }
+    }
+
+    const level4Mails = [
+      `
+      <div class="mail-meta">
+        <div><b>From:</b> Alice Chan</div>
+        <div><b>To:</b> John Smith</div>
+        <div><b>Subject:</b> Re: Admin Password</div>
+      </div>
+
+      <p>Hey — yeah, the team usually keeps it in an image for reference.</p>
+      <p>I’ve attached it below.</p>
+      <p>Sometimes it helps to look a little deeper than what’s visible.</p>
+      <p>Let me know if you still can’t find it.</p>
+
+      <div style="margin-top:10px;">
+        <b>Attachment:</b>
+         <button type="button"
+          onclick="window.open('https://surreyac-my.sharepoint.com/:f:/g/personal/ck00845_surrey_ac_uk/IgDvVitKHikQRb3jnpwdve4QAbFYRKR1OD7vwKVeWZ_N_mE?e=YZ8tp2','_blank')"
+          style="margin-left:10px; padding:8px 14px; border-radius:10px; border:1px solid #ccc; background:#111822; color:#fff; cursor:pointer;">
+          Open encoded_image_updated.png
+          </button>
+          </div>
+
+      <p style="margin-top:22px;"><b>From:</b> John Smith</p>
+      <p><b>To:</b> Alice Chan</p>
+      <p><b>Subject:</b> Admin Password</p>
+      <p>Hi Alice,</p>
+      <p>I’m trying to access the admin panel but it’s asking for a separate password. Do you know what it is?</p>
+      <p>Best,<br>John</p>
+      `
+    ];
+
+    function renderLevel4(){
+      const inputBox = byId("inputBox");
+      const actions = byId("actions");
+      actions.innerHTML = "";
+
+      if(state.level4Step === 0){
+        inputBox.innerHTML = `
+          <div class="dark-card">
+          </div>
+        `;
+
+        actions.appendChild(makeButton("Open Message Thread", () => {
+          state.level4Step = 1;
+          render();
+        }, "good"));
+
+        actions.appendChild(makeButton("Hint +30s", () => {
+          addHintPenalty();
+          toast(HINTS[4]);
+        }, "warn"));
+
+        actions.appendChild(makeButton("Reset", resetGame, "danger"));
+        return;
+      }
+
+      if(state.level4Step === 1){
+        inputBox.innerHTML = `
+          <div class="mail-shell">
+            <div class="mail-window">
+              <div class="mail-topbar">
+                <span>Women in Cybersecurity<span>
+                <span>Message Thread</span>
+              </div>
+              <div class="mail-body">
+                ${level4Mails[0]}
+              </div>
+            </div>
+            <div class="mail-counter">Thread 1 / 1</div>
+          </div>
+        `;
+
+        actions.appendChild(makeButton("Open Attachment", () => {
+          window.open('https://surreyac-my.sharepoint.com/personal/ck00845_surrey_ac_uk/_layouts/15/onedrive.aspx?viewid=e587d142-2126-4b42-a8ae-e5014c3018b9&id=%2fpersonal%2fck00845_surrey_ac_uk%2fDocuments%2fwicys+escape+room%2fmaterials%2fencoded_image_updated.png&parent=%2fpersonal%2fck00845_surrey_ac_uk%2fDocuments%2fwicys+escape+room%2fmaterials&xsdata=MDV8MDJ8ZW8wMDk4M0BzdXJyZXkuYWMudWt8YzA3YmM5MDQ1ZTFmNDczYWUzYzQwOGRlODRmMDU4MWV8NmI5MDI2OTMxMDc0NDBhYTllMjFkODk0NDZhMmViYjV8MHwwfDYzOTA5NDM2NDkzMjczOTg2NHxVbmtub3dufFRXRnBiR1pzYjNkOGV5SkZiWEIwZVUxaGNHa2lPblJ5ZFdVc0lsWWlPaUl3TGpBdU1EQXdNQ0lzSWxBaU9pSlhhVzR6TWlJc0lrRk9Jam9pVFdGcGJDSXNJbGRVSWpveWZRPT18MHx8fA%3d%3d&sdata=Q1p4UFl0TVpySTA0YmtSOExSNEQxVHNYRmtwWHNJcVI1dGJYZlBqTEtMaz0%3d', '_blank');
+        }));
+
+        actions.appendChild(makeButton("Proceed", () => {
+          state.level4Step = 2;
+          render();
+        }, "good"));
+
+        actions.appendChild(makeButton("Hint +30s", () => {
+          addHintPenalty();
+          toast(HINTS[4]);
+        }, "warn"));
+
+        actions.appendChild(makeButton("Reset", resetGame, "danger"));
+        return;
+      }
+
+      if(state.level4Step === 2){
+        inputBox.innerHTML = `
+          <div class="dark-card" style="margin-bottom:14px;">
+            Enter the admin password.
+          </div>
+          <div class="inputBox" style="max-width:720px;margin:0 auto;">
+            <input id="inp" placeholder="Password">
+          </div>
+        `;
+
+        actions.appendChild(makeButton("Unlock Admin", submitLevel4, "good"));
+        actions.appendChild(makeButton("Hint +30s", () => {
+          addHintPenalty();
+          toast(HINTS[4]);
+        }, "warn"));
+        actions.appendChild(makeButton("Reset", resetGame, "danger"));
+
+        const inp = byId("inp");
+        inp.focus();
+        inp.addEventListener("keydown", e => {
+          if(e.key === "Enter") submitLevel4();
+        });
+      }
+    }
+
+    function submitLevel4(){
+      const v = byId("inp").value.trim();
+      if(v !== ANSWERS[4]){
+        toast("Incorrect.");
+        return;
+      }
+      state.level = 5;
+      render();
+    }
+
+    function renderLevel5(){
+      const inputBox = byId("inputBox");
+      const actions = byId("actions");
+      actions.innerHTML = "";
+
+      inputBox.innerHTML = `
+        <div class="final-delete-box">
+          <div class="record-row">
+            <div>
+              <div class="record-title">Record #A-103</div>
+              <div class="record-sub">Privileged account audit trail</div>
+            </div>
+            <button class="danger" type="button" disabled>Delete</button>
+          </div>
+
+          <div class="record-row">
+            <div>
+              <div class="record-title">Record #B-244</div>
+              <div class="record-sub">Archived admin reset tokens</div>
+            </div>
+            <button class="danger" type="button" disabled>Delete</button>
+          </div>
+
+          <div class="cipher-box">
+            flz p dhua av klslal aopz
+          </div>
+
+          <div style="margin-top:18px;">
+            <input id="inp" placeholder="Enter confirmation phrase">
+          </div>
+        </div>
+      `;
+
+      actions.appendChild(makeButton("Delete Records", submitLevel5, "danger"));
+      actions.appendChild(makeButton("Hint +30s", () => {
+        addHintPenalty();
+        toast(HINTS[5]);
+      }, "warn"));
+      actions.appendChild(makeButton("Reset", resetGame, "danger"));
+
+      const inp = byId("inp");
+      inp.focus();
+      inp.addEventListener("keydown", e => {
+        if(e.key === "Enter") submitLevel5();
+      });
+    }
+
+    function submitLevel5(){
+      const v = byId("inp").value.trim().toLowerCase();
+      if(v !== ANSWERS[5]){
+        toast("Incorrect confirmation phrase.");
+        return;
+      }
+      state.level = 6;
+      render();
+    }
+
+    function resetGame(){
+      if(window.location.hash === "#admin"){
+        history.replaceState("", document.title, window.location.pathname + window.location.search);
+      }
+
+      state = {
+        user: "",
+        level: 0,
+        start: null,
+        penalty: 0,
+        level3Step: 0,
+        level4Step: 0,
+        level3Mail: 0
+      };
+      render();
+    }
+    
+    function renderLevel1(){
+      const inputBox = byId("inputBox");
+       const actions = byId("actions");
+       
+       inputBox.innerHTML = `
+        <input id="username" placeholder="Enter username">
+        <input id="password" placeholder="Enter password">
+         `;
+         actions.innerHTML = "";
+         
+         actions.appendChild(makeButton("Login", submitLevel1, "good"));
+          actions.appendChild(makeButton("Hint +30s", () => {
+             addHintPenalty();
+              toast(HINTS[1]);
+             }, "warn"));
+             actions.appendChild(makeButton("Reset", resetGame, "danger"));
+             byId("username").focus();
+            }
+            
+            
+      function render(){
+      clearToast();
+      updateStats();
+
+      byId("title").innerText = state.level === 0 ? "System Login"
+        : state.level === 6 ? "Simulation Complete"
+        : `Level ${state.level}`;
+
+      byId("subtitle").innerText = SUBTITLE[state.level];
+      byId("scenarioBox").innerText = SCENARIO[state.level];
+
+      const inputBox = byId("inputBox");
+      const actions = byId("actions");
+
+      inputBox.innerHTML = "";
+      actions.innerHTML = "";
+
+      if(state.level === 0){
+        renderInput("Enter your name", startGame);
+        return;
+      }
+
+      if(state.level === 1) {
+        renderLevel1();
+         return;
+        }
+
+      if(state.level === 2){
+        renderInput("Create stronger password", submitLevel2);
+        return;
+      }
+
+      if(state.level === 3){
+        renderLevel3();
+        return;
+      }
+
+      if(state.level === 4){
+        renderLevel4();
+        return;
+      }
+
+      if(state.level === 5){
+        renderLevel5();
+        return;
+      }
+
+      if(state.level === 6){
+        inputBox.innerHTML = `
+          <div class="success-box">
+            <b>Simulation complete.</b><br><br>
+            You successfully moved through the credential, password policy, hidden admin route,
+            steganography, and final confirmation stages.
+          </div>
+        `;
+        actions.innerHTML = "";
+        actions.appendChild(makeButton("Reset", resetGame, "danger"));
+        toast("Well done. You completed the simulation.");
+      }
+    }
+
+    window.addEventListener("hashchange", () => {
+      if(state.level === 3 && state.level3Step === 2 && isAdminRoute()){
+        toast("Hidden admin route detected.");
+      }
+    });
+
+    setInterval(updateStats, 500);
+    render();
+  </script>
+</body>
+</html>
