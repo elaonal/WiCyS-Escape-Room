@@ -488,7 +488,7 @@
     <aside class="side rules">
       <h2>Rules</h2>
       <ul>
-        <li>No gecdnAI tools permitted</li>
+        <li>No genAI tools permitted</li>
         <li>Google is allowed</li>
         <li>Use physical clues in the room</li>
         <li>Hints add time penalties</li>
@@ -530,11 +530,11 @@
     };
 
     const HINTS = {
-      1: "Chess-related clues are relevant.",
-      2: "Make it long and include uppercase, lowercase, a number, and a symbol.",
-      3: "Some pages are not listed in the dashboard navigation.",
-      4: "The password is not written directly. Review the message thread carefully.",
-      5: "Think of a Roman emperor. Shift 7."
+      1: "Checkmate",
+      2: "Make it long and include uppercase, lowercase, a number, and a symbol",
+      3: "URL",
+      4: "Some data is hidden in the image",
+      5: "A Roman emperor"
     };
 
     let state = {
@@ -600,7 +600,7 @@
       actions.innerHTML = "";
 
       actions.appendChild(makeButton("Submit", submitFn, "good"));
-      actions.appendChild(makeButton("Hint +30s", () => {
+      actions.appendChild(makeButton("Hint +60s", () => {
         addHintPenalty();
         toast(HINTS[state.level]);
       }, "warn"));
@@ -683,31 +683,6 @@
       `,
       `
       <div class="mail-meta">
-         <div><b>From:</b> IT Support &lt;itsupport@securecorp.com&gt;</div>
-          <div><b>To:</b> John Smith &lt;j.smith@securecorp.com&gt;</div>
-           <div><b>Subject:</b> Welcome to SecureCorp – Dashboard Access</div>
-           </div>
-           
-           <p>Hi,</p>
-           
-           <p>Welcome to the team! As part of your onboarding, you’ll need to access the internal dashboard to familiarise yourself with the system.</p>
-           
-           <p>You can log in here:</p>
-           
-           <div style="margin:14px 0 18px;">
-            <button type="button" onclick="window.open('https://surreyac-my.sharepoint.com/:f:/g/personal/ck00845_surrey_ac_uk/IgDvVitKHikQRb3jnpwdve4QAbFYRKR1OD7vwKVeWZ_N_mE?e=YZ8tp2%27%2c%27_blank&xsdata=MDV8MDJ8ZW8wMDk4M0BzdXJyZXkuYWMudWt8MDZlMWUyZTdmN2M0NDIzMDgyNWUwOGRlODgwNzVmOGF8NmI5MDI2OTMxMDc0NDBhYTllMjFkODk0NDZhMmViYjV8MHwwfDYzOTA5Nzc2MjIxNjA2OTIxMXxVbmtub3dufFRXRnBiR1pzYjNkOGV5SkZiWEIwZVUxaGNHa2lPblJ5ZFdVc0lsWWlPaUl3TGpBdU1EQXdNQ0lzSWxBaU9pSlhhVzR6TWlJc0lrRk9Jam9pVFdGcGJDSXNJbGRVSWpveWZRPT18MHx8fA%3d%3d&sdata=cEVyeDVuS3ExQjkzWXg3Z1hYQUdjUEkyK1hLQ01mSU4vOWNDakdWSGx1Yz0%3d')" style="padding:12px 18px; border-radius:12px; border:1px solid #ccc; background:#111822; color:#fff; cursor:pointer;">
-              Open onboarding materials
-              </button>
-              </div>
-              
-              <p>For first-time access, the system is still using the default company password. You should be able to find the information you need around the office.</p>
-              <p>Once you’re in, please make sure to update your password into something more secure.</p>
-              <p>Let us know if you run into any issues.</p>
-              
-              <p>– IT Support</p>
-              `,
-              `
-      <div class="mail-meta">
         <div><b>From:</b> Admin Team</div>
         <div><b>To:</b> John Smith</div>
         <div><b>Subject:</b> Admin Panel Access</div>
@@ -761,7 +736,7 @@
           render();
         }, "good"));
 
-        actions.appendChild(makeButton("Hint +30s", () => {
+        actions.appendChild(makeButton("Hint +60s", () => {
           addHintPenalty();
           toast(HINTS[3]);
         }, "warn"));
@@ -775,7 +750,7 @@
           <div class="mail-shell">
             <div class="mail-window">
               <div class="mail-topbar">
-                <span>Women in Cybersecurity
+                <span>Dashboard
                 <span>Messages</span>
               </div>
               <div class="mail-body">
@@ -805,7 +780,7 @@
           render();
         }, "good"));
 
-        actions.appendChild(makeButton("Hint +30s", () => {
+        actions.appendChild(makeButton("Hint +60s", () => {
           addHintPenalty();
           toast(HINTS[3]);
         }, "warn"));
@@ -833,7 +808,7 @@
           }
         }, "good"));
 
-        actions.appendChild(makeButton("Hint +30s", () => {
+        actions.appendChild(makeButton("Hint +60s", () => {
           addHintPenalty();
           toast(HINTS[3]);
         }, "warn"));
@@ -856,17 +831,16 @@
       <p>Let me know if you still can’t find it.</p>
 
       <div style="margin-top:10px;">
-        <b>Attachment:</b>
          <button type="button"
-          onclick="window.open('https://surreyac-my.sharepoint.com/:f:/g/personal/ck00845_surrey_ac_uk/IgDvVitKHikQRb3jnpwdve4QAbFYRKR1OD7vwKVeWZ_N_mE?e=YZ8tp2','_blank')"
+          onclick="window.open('encoded_image_updated.png','_blank')"
           style="margin-left:10px; padding:8px 14px; border-radius:10px; border:1px solid #ccc; background:#111822; color:#fff; cursor:pointer;">
-          Open encoded_image_updated.png
+          linux.jpg
           </button>
           </div>
-
-      <p style="margin-top:22px;"><b>From:</b> John Smith</p>
-      <p><b>To:</b> Alice Chan</p>
-      <p><b>Subject:</b> Admin Password</p>
+      <hr>
+      <div style="margin-top:22px;"><b>From:</b> John Smith</div>
+      <div><b>To:</b> Alice Chan</div>
+      <div><b>Subject:</b> Admin Password</div>
       <p>Hi Alice,</p>
       <p>I’m trying to access the admin panel but it’s asking for a separate password. Do you know what it is?</p>
       <p>Best,<br>John</p>
@@ -889,7 +863,7 @@
           render();
         }, "good"));
 
-        actions.appendChild(makeButton("Hint +30s", () => {
+        actions.appendChild(makeButton("Hint +60s", () => {
           addHintPenalty();
           toast(HINTS[4]);
         }, "warn"));
@@ -903,7 +877,7 @@
           <div class="mail-shell">
             <div class="mail-window">
               <div class="mail-topbar">
-                <span>Women in Cybersecurity<span>
+                <span>Dashboard<span>
                 <span>Message Thread</span>
               </div>
               <div class="mail-body">
@@ -915,7 +889,7 @@
         `;
 
         actions.appendChild(makeButton("Open Attachment", () => {
-          window.open('https://surreyac-my.sharepoint.com/personal/ck00845_surrey_ac_uk/_layouts/15/onedrive.aspx?viewid=e587d142-2126-4b42-a8ae-e5014c3018b9&id=%2fpersonal%2fck00845_surrey_ac_uk%2fDocuments%2fwicys+escape+room%2fmaterials%2fencoded_image_updated.png&parent=%2fpersonal%2fck00845_surrey_ac_uk%2fDocuments%2fwicys+escape+room%2fmaterials&xsdata=MDV8MDJ8ZW8wMDk4M0BzdXJyZXkuYWMudWt8YzA3YmM5MDQ1ZTFmNDczYWUzYzQwOGRlODRmMDU4MWV8NmI5MDI2OTMxMDc0NDBhYTllMjFkODk0NDZhMmViYjV8MHwwfDYzOTA5NDM2NDkzMjczOTg2NHxVbmtub3dufFRXRnBiR1pzYjNkOGV5SkZiWEIwZVUxaGNHa2lPblJ5ZFdVc0lsWWlPaUl3TGpBdU1EQXdNQ0lzSWxBaU9pSlhhVzR6TWlJc0lrRk9Jam9pVFdGcGJDSXNJbGRVSWpveWZRPT18MHx8fA%3d%3d&sdata=Q1p4UFl0TVpySTA0YmtSOExSNEQxVHNYRmtwWHNJcVI1dGJYZlBqTEtMaz0%3d', '_blank');
+          window.open('encoded_image_updated.png','_blank')
         }));
 
         actions.appendChild(makeButton("Proceed", () => {
@@ -923,7 +897,7 @@
           render();
         }, "good"));
 
-        actions.appendChild(makeButton("Hint +30s", () => {
+        actions.appendChild(makeButton("Hint +60s", () => {
           addHintPenalty();
           toast(HINTS[4]);
         }, "warn"));
@@ -942,8 +916,8 @@
           </div>
         `;
 
-        actions.appendChild(makeButton("Unlock Admin", submitLevel4, "good"));
-        actions.appendChild(makeButton("Hint +30s", () => {
+        actions.appendChild(makeButton("Unlock Admin Privileges", submitLevel4, "good"));
+        actions.appendChild(makeButton("Hint +60s", () => {
           addHintPenalty();
           toast(HINTS[4]);
         }, "warn"));
@@ -995,13 +969,13 @@
           </div>
 
           <div style="margin-top:18px;">
-            <input id="inp" placeholder="Enter confirmation phrase">
+            <input id="inp" placeholder="Enter confirmation code">
           </div>
         </div>
       `;
 
       actions.appendChild(makeButton("Delete Records", submitLevel5, "danger"));
-      actions.appendChild(makeButton("Hint +30s", () => {
+      actions.appendChild(makeButton("Hint +60s", () => {
         addHintPenalty();
         toast(HINTS[5]);
       }, "warn"));
@@ -1052,7 +1026,7 @@
          actions.innerHTML = "";
          
          actions.appendChild(makeButton("Login", submitLevel1, "good"));
-          actions.appendChild(makeButton("Hint +30s", () => {
+          actions.appendChild(makeButton("Hint +60s", () => {
              addHintPenalty();
               toast(HINTS[1]);
              }, "warn"));
@@ -1111,14 +1085,12 @@
       if(state.level === 6){
         inputBox.innerHTML = `
           <div class="success-box">
-            <b>Simulation complete.</b><br><br>
-            You successfully moved through the credential, password policy, hidden admin route,
-            steganography, and final confirmation stages.
+            <b>Well done!</b><br><br>
+            You successfully gained admin access and deleted sensitive records. In doing so, you exploited weak credentials, URL manipulation (security through obscurity), steganography, and simple encoding (Caesar cipher). 
           </div>
         `;
         actions.innerHTML = "";
         actions.appendChild(makeButton("Reset", resetGame, "danger"));
-        toast("Well done. You completed the simulation.");
       }
     }
 
